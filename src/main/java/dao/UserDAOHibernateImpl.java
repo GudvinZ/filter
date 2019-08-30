@@ -53,7 +53,7 @@ public class UserDAOHibernateImpl implements DAO {
 
     @Override
     public void updateUser(User user) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Transaction trx = session.beginTransaction();
             session.createQuery("UPDATE User SET login=?1, password=?2, name=?3 WHERE id=?4")
                     .setParameter(1, user.getLogin())
@@ -67,18 +67,28 @@ public class UserDAOHibernateImpl implements DAO {
 
     @Override
     public List<User> getAllUsers() {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM User").list();
         }
     }
 
     @Override
     public boolean validateUser(String login, String password) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM User where login=?1 AND password=?2")
                     .setParameter(1, login)
                     .setParameter(2, password)
                     .uniqueResult() != null;
+        }
+    }
+
+    @Override
+    public User getUserByLoginAndPassword(String login, String password) {
+        try (Session session = sessionFactory.openSession()) {
+            return (User) session.createQuery("FROM User where login=?1 AND password=?2")
+                    .setParameter(1, login)
+                    .setParameter(2, password)
+                    .uniqueResult();
         }
     }
 }

@@ -1,5 +1,6 @@
 package service;
 
+import dao.DAO;
 import model.User;
 import util.factory.UserDAOFactory;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public class UserService {
     private static UserService instance;
-    private UserDAOFactory daoFactory;
+    private DAO dao;
 
     public static UserService getInstance() {
         if (instance == null)
@@ -16,29 +17,37 @@ public class UserService {
     }
 
     private UserService() {
-        this.daoFactory = UserDAOFactory.createFactoryByProperties();
+        this.dao = UserDAOFactory.createFactoryByProperties().createDAO();
     }
 
     public boolean addUser(User user) {
-        if (daoFactory.createDAO().validateUser(user.getLogin(), user.getPassword()))
+        if (dao.validateUser(user.getLogin(), user.getPassword()))
             return false;
-        daoFactory.createDAO().addUser(user);
+        dao.addUser(user);
         return true;
     }
 
     public void deleteUserById(Long id) {
-        daoFactory.createDAO().deleteUserById(id);
+        dao.deleteUserById(id);
     }
 
     public void deleteAllUsers() {
-        daoFactory.createDAO().deleteAllUsers();
+        dao.deleteAllUsers();
     }
 
     public void updateUser(User user) {
-        daoFactory.createDAO().updateUser(user);
+        dao.updateUser(user);
     }
 
     public List<User> getAllUsers() {
-        return daoFactory.createDAO().getAllUsers();
+        return dao.getAllUsers();
+    }
+
+    public boolean validateUser(String login, String password) {
+        return dao.validateUser(login, password);
+    }
+
+    public User getUserByLoginAndPassword(String login, String password) {
+        return dao.getUserByLoginAndPassword(login, password);
     }
 }

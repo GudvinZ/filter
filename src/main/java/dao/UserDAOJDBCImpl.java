@@ -96,7 +96,8 @@ public class UserDAOJDBCImpl implements DAO {
                                         x.getLong("id"),
                                         x.getString("login"),
                                         x.getString("password"),
-                                        x.getString("name")
+                                        x.getString("name"),
+                                        x.getString("role")
                                 ));
                     }
                     return list;
@@ -109,6 +110,25 @@ public class UserDAOJDBCImpl implements DAO {
         return execQuery(
                 "select id from users where login=? and password=?",
                 ResultSet::next,
+                login,
+                password
+        );
+    }
+
+    @Override
+    public User getUserByLoginAndPassword(String login, String password) {
+        return execQuery(
+                "select * from users where login=? and password=?",
+                x->{
+                    x.next();
+                    return new User(
+                            x.getLong("id"),
+                            x.getString("login"),
+                            x.getString("password"),
+                            x.getString("name"),
+                            x.getString("role")
+                    );
+                },
                 login,
                 password
         );

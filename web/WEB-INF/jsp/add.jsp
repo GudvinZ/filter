@@ -15,10 +15,10 @@
 <c:if test="${isEmptyForm}">
     <c:out value="all fields must be filled"/>
 </c:if>
-<c:if test="${isNotValidate}">
-    <c:out value="change the login or password"/>
+<c:if test="${isValidate==false}">
+    <c:out value="wrong login or password"/>
 </c:if>
-<form action="<c:url value="/add/"/>" method="post">
+<form action="<c:url value="/admin/add"/>" method="post">
     <table>
         <tr>
             <td>
@@ -39,7 +39,8 @@
             </td>
         </tr>
     </table>
-    <button type="submit">Add user</button>
+    <button type="submit" value="user" name="role" style="display: inline">Add user</button>
+    <button type="submit" value="admin" name="role" style="display: inline">Add admin</button>
 </form>
 </body>
 </html>

@@ -15,5 +15,7 @@ public interface DAO {
 
     boolean validateUser(String login, String password);
 
+    User getUserByLoginAndPassword(String login, String password);
+
     List<User> getAllUsers();
 }

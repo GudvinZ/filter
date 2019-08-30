@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/update/*")
+@WebServlet("/admin/update")
 public class UpdateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("id", Long.parseLong(req.getParameter("id")));
-        getServletContext().getRequestDispatcher("/jsp/update.jsp").forward(req, resp);
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/update.jsp").forward(req, resp);
     }
 
     @Override
@@ -24,14 +24,17 @@ public class UpdateServlet extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         String name = req.getParameter("name");
+        String role = req.getParameter("role");
+
         UserService.getInstance().updateUser(
                 new User(
                         Long.parseLong(req.getParameter("id")),
                         login,
                         password,
-                        name
+                        name,
+                        role
                 )
         );
-        getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(req, resp);
     }
 }
