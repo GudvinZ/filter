@@ -31,18 +31,14 @@ public class AuthFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         HttpSession session = req.getSession(false);
 
-        if (session == null || session.getAttribute("currentUser") == null) {
-            resp.sendRedirect("/");
-            return;
-        } else {
+        if (session != null && session.getAttribute("currentUser") != null) {
             User user = (User) session.getAttribute("currentUser");
-            if (!user.getRole().equals("admin")) {
-//                ((HttpServletResponse) servletResponse).sendRedirect("/user");
+            if (user.getRole().equals("admin"))
+                filterChain.doFilter(servletRequest, servletResponse);
+            else
                 resp.sendRedirect("/user");
-                return;
-            }
+        } else {
+            resp.sendRedirect("/");
         }
-
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 }

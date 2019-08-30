@@ -55,10 +55,11 @@ public class UserDAOJDBCImpl implements DAO {
     @Override
     public void addUser(User user) {
         execUpdate(
-                "insert into users (login, password, name) values (?, ?, ?)",
+                "insert into users (login, password, name, role) values (?, ?, ?, ?)",
                 user.getLogin(),
                 user.getPassword(),
-                user.getName()
+                user.getName(),
+                user.getRole()
         );
     }
 
@@ -135,7 +136,7 @@ public class UserDAOJDBCImpl implements DAO {
     }
 
     public void createTable() {
-        execUpdate("create table if not exists users (id bigint auto_increment, login varchar(256), password varchar(256), name varchar(256), primary key (id))");
+        execUpdate("create table if not exists users (id bigint auto_increment, login varchar(256), password varchar(256), name varchar(256), role varchar(256), primary key (id))");
     }
 
     public void dropTable() {
