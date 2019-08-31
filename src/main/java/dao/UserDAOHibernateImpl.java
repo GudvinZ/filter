@@ -4,7 +4,6 @@ import model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import util.factory.UserDAOHibernateFactory;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class UserDAOHibernateImpl implements DAO {
     public void addUser(User user) {
         try (Session session = sessionFactory.openSession()) {
             Transaction trx = session.beginTransaction();
-            session.save(user);
+            session.persist(user);
             trx.commit();
         }
     }
