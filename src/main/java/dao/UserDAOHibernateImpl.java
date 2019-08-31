@@ -54,12 +54,13 @@ public class UserDAOHibernateImpl implements DAO {
     public void updateUser(User user) {
         try (Session session = sessionFactory.openSession()) {
             Transaction trx = session.beginTransaction();
-            session.createQuery("UPDATE User SET login=?1, password=?2, name=?3 WHERE id=?4")
-                    .setParameter(1, user.getLogin())
-                    .setParameter(2, user.getPassword())
-                    .setParameter(3, user.getName())
-                    .setParameter(4, user.getId())
-                    .executeUpdate();
+//            session.createQuery("UPDATE User SET login=?1, password=?2, name=?3 WHERE id=?4")
+//                    .setParameter(1, user.getLogin())
+//                    .setParameter(2, user.getPassword())
+//                    .setParameter(3, user.getName())
+//                    .setParameter(4, user.getId())
+//                    .executeUpdate();
+            session.update(user);
             trx.commit();
         }
     }
