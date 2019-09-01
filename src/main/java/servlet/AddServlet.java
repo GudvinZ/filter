@@ -23,17 +23,7 @@ public class AddServlet extends HttpServlet {
         if (login.isEmpty() || password.isEmpty() || name.isEmpty()) {
             req.setAttribute("isEmptyForm", true);
         } else {
-            req.setAttribute(
-                    "isValidate",
-                    UserService.getInstance().addUser(
-                            new User(
-                                    login,
-                                    password,
-                                    name,
-                                    role
-                            )
-                    )
-            );
+            req.setAttribute("isValidate", UserService.getInstance().addUser(new User(login, password, name, role)));
         }
 
         getServletContext().getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(req, resp);

@@ -10,23 +10,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/auth")
+@WebServlet("/")
 public class AuthServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         if (login.isEmpty() || password.isEmpty()) {
             req.setAttribute("isEmptyForm", true);
-            getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
+            getServletContext().getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
         } else {
             boolean isValidate = UserService.getInstance().validateUser(login, password);
             req.setAttribute("isValidate", isValidate);
-            if(isValidate) {
-                req.getSession().setAttribute("currentUser", UserService.getInstance().getUserByLoginAndPassword(login, password));
-                resp.sendRedirect("/admin");
+            if (isValidate) {
+                User user = UserService.getInstance().getUserByLoginAndPassword(login, password);
+                req.getSession().setAttribute("currentUser", user);
+                resp.sendRedirect("/" + user.getRole());
             } else {
-                getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
+                getServletContext().getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
             }
         }
     }

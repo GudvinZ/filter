@@ -120,7 +120,7 @@ public class UserDAOJDBCImpl implements DAO {
     public User getUserByLoginAndPassword(String login, String password) {
         return execQuery(
                 "select * from users where login=? and password=?",
-                x->{
+                x -> {
                     x.next();
                     return new User(
                             x.getLong("id"),

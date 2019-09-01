@@ -5,19 +5,18 @@ import model.User;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-@WebFilter(urlPatterns = "/admin/*")
+@WebFilter(urlPatterns = {"/admin/*", "/user/*"})
 public class AuthFilter implements Filter {
+    FilterConfig config;
 
     @Override
     public void init(FilterConfig filterConfig) {
+        this.config = filterConfig;
     }
 
     @Override
@@ -33,10 +32,36 @@ public class AuthFilter implements Filter {
 
         if (session != null && session.getAttribute("currentUser") != null) {
             User user = (User) session.getAttribute("currentUser");
-            if (user.getRole().equals("admin"))
-                filterChain.doFilter(servletRequest, servletResponse);
-            else
-                resp.sendRedirect("/user");
+            String path = req.getServletPath().split("/")[1];
+
+            switch (path) {
+                case "admin":
+                    if (user.getRole().equals("admin")) {
+                        filterChain.doFilter(req, resp);
+                        return;
+                    }
+                    break;
+                case "user":
+                    if (user.getRole().equals("user") || user.getRole().equals("admin")) {
+                        filterChain.doFilter(req, resp);
+                        return;
+                    }
+                    break;
+                default:
+                    resp.sendError(500);
+                    return;
+            }
+            resp.sendRedirect("/noAccess");
+//            if (user.getRole().equals("admin"))
+//                filterChain.doFilter(req, resp);
+//            else if (user.getRole().equals("user")) {
+//                if (req.getRequestURI().equals(req.getContextPath().concat("/user")))
+//                    filterChain.doFilter(req, resp);
+//                else
+//                    resp.sendRedirect("/user");
+//            }
+//            else
+//                resp.sendRedirect("/");
         } else {
             resp.sendRedirect("/");
         }
