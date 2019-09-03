@@ -1,14 +1,14 @@
 package service;
 
-import dao.DAO;
+import dao.IDAO;
 import model.User;
-import util.factory.UserDAOFactory;
+import util.factory.abstractDAOFactory;
 
 import java.util.List;
 
-public class UserService {
+public class UserService implements Service<User> {
     private static UserService instance;
-    private DAO dao;
+    private IDAO<User> dao;
 
     public static UserService getInstance() {
         if (instance == null)
@@ -17,37 +17,52 @@ public class UserService {
     }
 
     private UserService() {
-        this.dao = UserDAOFactory.createFactoryByProperties().createDAO();
+        this.dao = abstractDAOFactory.createFactoryByProperties().createDAO(User.class);
     }
 
-    public boolean addUser(User user) {
-        if (dao.validateUser(user.getLogin(), user.getPassword()))
+    @Override
+    public boolean add(User user) {
+        if (validate(user.getLogin(), user.getPassword()))
             return false;
-        dao.addUser(user);
+        dao.add(user);
         return true;
     }
 
-    public void deleteUserById(Long id) {
-        dao.deleteUserById(id);
+    public boolean validate(String login, String password) {
+        User user = dao.getUniqueByParam(login, "login");
+        return user != null && user.getPassword().equals(password);
     }
 
-    public void deleteAllUsers() {
-        dao.deleteAllUsers();
+    @Override
+    public void deleteById(Long id) {
+        dao.deleteById(id);
     }
 
-    public void updateUser(User user) {
-        dao.updateUser(user);
+    @Override
+    public void deleteAll() {
+        dao.deleteAll();
     }
 
-    public List<User> getAllUsers() {
-        return dao.getAllUsers();
+    @Override
+    public boolean update(User user) {
+        if (validate(user.getLogin(), user.getPassword()))
+            return false;
+        dao.update(user);
+        return true;
     }
 
-    public boolean validateUser(String login, String password) {
-        return dao.validateUser(login, password);
+    @Override
+    public List<User> getAll() {
+        return dao.getAll();
     }
 
-    public User getUserByLoginAndPassword(String login, String password) {
-        return dao.getUserByLoginAndPassword(login, password);
+    @Override
+    public User getUniqueByParam(Object param, String fieldName) {
+        return dao.getUniqueByParam(param, fieldName);
+    }
+
+    @Override
+    public List<User> getListByParam(Object param, String fieldName) {
+        return dao.getListByParam(param, fieldName);
     }
 }

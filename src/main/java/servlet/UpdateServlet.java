@@ -21,20 +21,26 @@ public class UpdateServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Long id = Long.parseLong(req.getParameter("id"));
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         String name = req.getParameter("name");
-        String role = req.getParameter("role");
+        User user = UserService.getInstance().getUniqueByParam(id, "id");
 
-        UserService.getInstance().updateUser(
-                new User(
-                        Long.parseLong(req.getParameter("id")),
-                        login,
-                        password,
-                        name,
-                        role
-                )
-        );
+        if (UserService.getInstance().getUniqueByParam(login, "login") != null && !login.equals(user.getLogin())) {
+            req.setAttribute("isAlreadyExist", true);
+            req.setAttribute("id", id);
+            getServletContext().getRequestDispatcher("/WEB-INF/jsp/update.jsp").forward(req, resp);
+            return;
+        } else {
+            user.setLogin(login);
+            user.setPassword(password);
+            user.setName(name);
+
+            UserService.getInstance().update(user);
+        }
+
+        req.getSession().setAttribute("users", UserService.getInstance().getAll());
         getServletContext().getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(req, resp);
     }
 }

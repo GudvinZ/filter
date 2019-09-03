@@ -26,14 +26,12 @@
     <title>update</title>
 </head>
 <body>
-<c:set var="users" scope="session" value="${UserService.getInstance().getAllUsers()}"/>
 <jsp:include page="/WEB-INF/jsp/add.jsp"/>
 <p>
 <form action="<c:url value="/admin/delete"/>" method="get" style="display: inline">
     Users:
     <button type="submit">Delete all users</button>
 </form>
-</p>
 <table border="1" rules="rows">
     <c:forEach var="user" items="${users}">
         <tr>
@@ -52,6 +50,9 @@
             </c:if>
             <c:if test="${user.getId()==id}">
                 <td>
+                    <c:if test="${isAlreadyExist}">
+                        <c:out value="User with the same login is already exist"/><br>
+                    </c:if>
                     <c:out value="User: ${user.getName()}"/>
                     <form action="<c:url value="/admin/update"/>" method="post" style="display: inline">
                         <table>

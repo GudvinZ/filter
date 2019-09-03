@@ -19,6 +19,7 @@
                 <c:out value="User: ${user.getName()}"/><br>
                 <c:out value="Login: ${user.getLogin()}"/><br>
                 <c:out value="Password: ${user.getPassword()}"/><br>
+                <c:out value="Roles: ${user.getRoles()}"/><br>
                 <form action="<c:url value="/admin/update"/>" method="get" style="display:inline">
                     <button type="submit" name="id" value=${user.getId()}>Update</button>
                 </form>

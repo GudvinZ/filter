@@ -13,7 +13,6 @@
     <title>index</title>
 </head>
 <body>
-<c:set var="users" scope="session" value="${UserService.getInstance().getAllUsers()}"/>
 <c:if test="${users.size()<1}">
     <p>
         You have no users, add user?

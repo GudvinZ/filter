@@ -38,9 +38,14 @@
                 </label>
             </td>
         </tr>
+        <tr>
+            <td>
+                    admin: <input type="checkbox" name="roles" value="admin">
+                    user: <input type="checkbox" name="roles" value="user">
+            </td>
+        </tr>
     </table>
-    <button type="submit" value="user" name="role" style="display: inline">Add user</button>
-    <button type="submit" value="admin" name="role" style="display: inline">Add admin</button>
+    <button type="submit">Add user</button>
 </form>
 </body>
 </html>

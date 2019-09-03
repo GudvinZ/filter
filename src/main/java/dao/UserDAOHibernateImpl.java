@@ -5,90 +5,27 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import java.util.List;
-
-public class UserDAOHibernateImpl implements DAO {
+public class UserDAOHibernateImpl extends AbstractHibernateDao<User> {
     private static UserDAOHibernateImpl instance;
-    private SessionFactory sessionFactory;
 
-    public static UserDAOHibernateImpl getInstance(SessionFactory sessionFactory) {
+    public static UserDAOHibernateImpl getInstance(Class modelClass, SessionFactory sessionFactory) {
         if (instance == null)
-            instance = new UserDAOHibernateImpl(sessionFactory);
+            instance = new UserDAOHibernateImpl(modelClass, sessionFactory);
         return instance;
     }
 
-    private UserDAOHibernateImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+
+    private UserDAOHibernateImpl(Class modelClass, SessionFactory sessionFactory) {
+        super.setModelClass(modelClass);
+        super.setSessionFactory(sessionFactory);
     }
 
     @Override
-    public void addUser(User user) {
-        try (Session session = sessionFactory.openSession()) {
+    public void add(User user) {
+        try (Session session = super.getSessionFactory().openSession()) {
             Transaction trx = session.beginTransaction();
-            session.persist(user);
+            session.merge(user);
             trx.commit();
-        }
-    }
-
-    @Override
-    public void deleteUserById(Long id) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction trx = session.beginTransaction();
-            session.createQuery("DELETE FROM User WHERE id=?1")
-                    .setParameter(1, id)
-                    .executeUpdate();
-            trx.commit();
-        }
-    }
-
-    @Override
-    public void deleteAllUsers() {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction trx = session.beginTransaction();
-            session.createQuery("DELETE FROM User").executeUpdate();
-            trx.commit();
-        }
-    }
-
-    @Override
-    public void updateUser(User user) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction trx = session.beginTransaction();
-//            session.createQuery("UPDATE User SET login=?1, password=?2, name=?3 WHERE id=?4")
-//                    .setParameter(1, user.getLogin())
-//                    .setParameter(2, user.getPassword())
-//                    .setParameter(3, user.getName())
-//                    .setParameter(4, user.getId())
-//                    .executeUpdate();
-            session.update(user);
-            trx.commit();
-        }
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM User").list();
-        }
-    }
-
-    @Override
-    public boolean validateUser(String login, String password) {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM User where login=?1 AND password=?2")
-                    .setParameter(1, login)
-                    .setParameter(2, password)
-                    .uniqueResult() != null;
-        }
-    }
-
-    @Override
-    public User getUserByLoginAndPassword(String login, String password) {
-        try (Session session = sessionFactory.openSession()) {
-            return (User) session.createQuery("FROM User where login=?1 AND password=?2")
-                    .setParameter(1, login)
-                    .setParameter(2, password)
-                    .uniqueResult();
         }
     }
 }

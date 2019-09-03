@@ -1,6 +1,11 @@
 package model;
 
+import com.sun.istack.NotNull;
+import service.RoleService;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -11,34 +16,54 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "login")
+    @Column(name = "login", unique = true, nullable = false)
     private String login;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "role")
-    private String role;
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    public User(Long id, String login, String password, String name, String role) {
+    public User(Long id, String login, String password, String name, @NotNull String[] roles) {
         this.id = id;
         this.login = login;
         this.password = password;
         this.name = name;
-        this.role = role;
+        for (String role : roles) {
+            Role roleX = RoleService.getInstance().getUniqueByParam(role, "role");
+            addRole(roleX != null ? roleX : new Role(role));
+        }
     }
 
-    public User(String login, String password, String name, String role) {
+    public User(Long id, String login, String password, String name) {
+        this.id = id;
         this.login = login;
         this.password = password;
         this.name = name;
-        this.role = role;
+    }
+
+    public User(String login, String password, String name, String[] roles) {
+        this.login = login;
+        this.password = password;
+        this.name = name;
+        for (String role : roles) {
+            Role roleX = RoleService.getInstance().getUniqueByParam(role, "role");
+            addRole(roleX != null ? roleX : new Role(role));
+        }
     }
 
     public User() {
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 
     public Long getId() {
@@ -73,11 +98,13 @@ public class User {
         this.name = name;
     }
 
-    public String getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
+
+
 }

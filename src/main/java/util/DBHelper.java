@@ -1,5 +1,6 @@
 package util;
 
+import model.Role;
 import model.User;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -38,7 +39,8 @@ public enum DBHelper {
         if (connection == null)
             configuration = new Configuration()
                     .configure()
-                    .addAnnotatedClass(User.class);
+                    .addAnnotatedClass(User.class)
+                    .addAnnotatedClass(Role.class);
         return configuration;
     }
 }

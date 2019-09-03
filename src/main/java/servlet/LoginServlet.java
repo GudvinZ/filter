@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/")
-public class AuthServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,12 +26,12 @@ public class AuthServlet extends HttpServlet {
             req.setAttribute("isEmptyForm", true);
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
         } else {
-            boolean isValidate = UserService.getInstance().validateUser(login, password);
+            boolean isValidate = UserService.getInstance().validate(login, password);
             req.setAttribute("isValidate", isValidate);
             if (isValidate) {
-                User user = UserService.getInstance().getUserByLoginAndPassword(login, password);
+                User user = UserService.getInstance().getUniqueByParam(login, "login");
                 req.getSession().setAttribute("currentUser", user);
-                resp.sendRedirect("/" + user.getRole());
+                resp.sendRedirect("/redirect");
             } else {
                 getServletContext().getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
             }
