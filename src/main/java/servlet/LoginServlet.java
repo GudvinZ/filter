@@ -26,10 +26,10 @@ public class LoginServlet extends HttpServlet {
             req.setAttribute("isEmptyForm", true);
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
         } else {
-            boolean isValidate = UserService.getInstance().validate(login, password);
+            boolean isValidate = UserService.getInstance().validateUser(login, password);
             req.setAttribute("isValidate", isValidate);
             if (isValidate) {
-                User user = UserService.getInstance().getUniqueByParam(login, "login");
+                User user = UserService.getInstance().getUserByParam(login, "login");
                 req.getSession().setAttribute("currentUser", user);
                 resp.sendRedirect("/redirect");
             } else {

@@ -6,7 +6,7 @@ import util.factory.abstractDAOFactory;
 
 import java.util.List;
 
-public class UserService implements Service<User> {
+public class UserService implements IUserService {
     private static UserService instance;
     private IDAO<User> dao;
 
@@ -21,48 +21,48 @@ public class UserService implements Service<User> {
     }
 
     @Override
-    public boolean add(User user) {
-        if (validate(user.getLogin(), user.getPassword()))
+    public boolean addUser(User user) {
+        if (validateUser(user.getLogin(), user.getPassword()))
             return false;
         dao.add(user);
         return true;
     }
 
-    public boolean validate(String login, String password) {
+    public boolean validateUser(String login, String password) {
         User user = dao.getUniqueByParam(login, "login");
         return user != null && user.getPassword().equals(password);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteUserById(Long id) {
         dao.deleteById(id);
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAllUsers() {
         dao.deleteAll();
     }
 
     @Override
-    public boolean update(User user) {
-        if (validate(user.getLogin(), user.getPassword()))
+    public boolean updateUser(User user) {
+        if (validateUser(user.getLogin(), user.getPassword()))
             return false;
         dao.update(user);
         return true;
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> getAllUsers() {
         return dao.getAll();
     }
 
     @Override
-    public User getUniqueByParam(Object param, String fieldName) {
+    public User getUserByParam(Object param, String fieldName) {
         return dao.getUniqueByParam(param, fieldName);
     }
 
     @Override
-    public List<User> getListByParam(Object param, String fieldName) {
+    public List<User> getUsersByParam(Object param, String fieldName) {
         return dao.getListByParam(param, fieldName);
     }
 }

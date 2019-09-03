@@ -6,7 +6,7 @@ import util.factory.abstractDAOFactory;
 
 import java.util.List;
 
-public class RoleService implements Service<Role> {
+public class RoleService implements IRoleService {
     private static RoleService instance;
     private IDAO<Role> dao;
 

@@ -25,9 +25,9 @@ public class UpdateServlet extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         String name = req.getParameter("name");
-        User user = UserService.getInstance().getUniqueByParam(id, "id");
+        User user = UserService.getInstance().getUserByParam(id, "id");
 
-        if (UserService.getInstance().getUniqueByParam(login, "login") != null && !login.equals(user.getLogin())) {
+        if (UserService.getInstance().getUserByParam(login, "login") != null && !login.equals(user.getLogin())) {
             req.setAttribute("isAlreadyExist", true);
             req.setAttribute("id", id);
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/update.jsp").forward(req, resp);
@@ -37,10 +37,10 @@ public class UpdateServlet extends HttpServlet {
             user.setPassword(password);
             user.setName(name);
 
-            UserService.getInstance().update(user);
+            UserService.getInstance().updateUser(user);
         }
 
-        req.getSession().setAttribute("users", UserService.getInstance().getAll());
+        req.getSession().setAttribute("users", UserService.getInstance().getAllUsers());
         getServletContext().getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(req, resp);
     }
 }

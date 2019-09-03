@@ -40,8 +40,8 @@
         </tr>
         <tr>
             <td>
-                    admin: <input type="checkbox" name="roles" value="admin">
-                    user: <input type="checkbox" name="roles" value="user">
+                user: <input type="checkbox" checked name="roles" value="user">
+                admin: <input type="checkbox" name="roles" value="admin">
             </td>
         </tr>
     </table>
